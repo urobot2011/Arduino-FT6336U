@@ -24,24 +24,24 @@ FT6336U::~FT6336U() {
 
 void FT6336U::begin(void) {
     // Initialize I2C
-#if defined(ESP32) || defined(ESP8266)
     if(sda != -1 && scl != -1) {
         Wire.begin(sda, scl);
     }
     else {
         Wire.begin();
     }
-#else
-    Wire.begin();
-#endif
-    // Int Pin Configuration
-    pinMode(int_n, INPUT);
-    // Reset Pin Configuration
-    pinMode(rst_n, OUTPUT);
-    digitalWrite(rst_n, LOW);
-    delay(10);
-    digitalWrite(rst_n, HIGH);
-    delay(500);
+    if(int_n != -1) {
+        // Int Pin Configuration
+        pinMode(int_n, INPUT);
+    }
+    if(rst_n != -1) {
+        // Reset Pin Configuration
+        pinMode(rst_n, OUTPUT);
+        digitalWrite(rst_n, LOW);
+        delay(10);
+        digitalWrite(rst_n, HIGH);
+        delay(500);
+    }
 }
 uint8_t FT6336U::read_device_mode(void) {
     return (readByte(FT6336U_ADDR_DEVICE_MODE) & 0x70) >> 4;
